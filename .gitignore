@@ -53,3 +53,9 @@ backend/*.db
 # 操作系统文件
 .DS_Store
 Thumbs.db
+
+# 项目需求文档 - 不上传到 GitHub
+项目需求.txt
+*.txt
+!README.txt
+!QUICKSTART.txt
