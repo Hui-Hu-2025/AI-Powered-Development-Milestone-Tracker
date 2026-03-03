@@ -1,10 +1,7 @@
 from datetime import datetime, date
 from typing import List
 from models import Child, DevelopmentRecord
-try:
-    from llm_service_secure import SecureLLMService as LLMService
-except:
-    from llm_service import LLMService
+from llm_service_secure import SecureLLMService as LLMService
 
 
 class DevelopmentService:
