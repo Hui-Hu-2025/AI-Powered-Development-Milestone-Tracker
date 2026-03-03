@@ -1,164 +1,260 @@
-# 儿童发育里程碑追踪工具
+# AI-Powered Child Development Milestone Tracker
 
-一个基于AI的儿童发育监测系统，专门用于追踪有特殊情况孩子的发育里程碑。
+An AI-based child development monitoring system specifically designed to track developmental milestones for children with special conditions.
 
-## 功能特性
+## Features
 
-1. **孩子档案管理** - 创建和管理孩子的特殊情况信息
-2. **发育记录追踪** - 记录身高、体重、头围、大运动、语言、精细动作、睡眠、饮食等
-3. **AI智能评估** - 使用OpenAI GPT-4自动评估孩子的发育状态（正常发育/良性发育/倒退）
-4. **里程碑预测** - 预测孩子下一个可能达到的发育里程碑及时间节点
-5. **多媒体支持** - 支持图片、视频、文字等多种输入格式
+1. **Child Profile Management** - Create and manage child profiles with special condition information
+2. **Development Record Tracking** - Record height, weight, head circumference, gross motor skills, language, fine motor skills, sleep, diet, and more
+3. **AI-Powered Assessment** - Automatically assess child's development status (Normal Development / Benign Development / Regression) using OpenAI GPT-4
+4. **Milestone Prediction** - Predict next developmental milestones and their expected timelines (up to 3 years of age)
+5. **Normal Development Comparison** - Compare child's development with typical milestones for their age group
+6. **Multimedia Support** - Support for images, videos, and text input formats
+7. **Bilingual Support** - Full support for both English and Chinese interfaces
+8. **Data Privacy** - Optional data anonymization before sending to AI services
 
-## 技术架构
+## Technology Stack
 
 ```
-React 前端
+React Frontend
     |
     v
-FastAPI 后端
+FastAPI Backend
     |
     v
-SQLite 数据库 (结构化数据)
-ChromaDB (向量数据库)
+SQLite Database (Structured Data)
+ChromaDB (Vector Database - for future expansion)
     |
     v
 OpenAI GPT-4 (LLM)
 ```
 
-## 项目结构
+## Project Structure
 
 ```
 .
-├── backend/          # FastAPI 后端
-│   ├── main.py      # API 主文件
-│   ├── models.py    # 数据库模型
-│   ├── database.py  # 数据库配置
-│   ├── llm_service.py  # LLM 服务
-│   ├── services.py  # 业务逻辑服务
+├── backend/          # FastAPI Backend
+│   ├── main.py      # API main file
+│   ├── models.py    # Database models
+│   ├── database.py  # Database configuration
+│   ├── llm_service_secure.py  # Secure LLM service with anonymization
+│   ├── services.py  # Business logic services
+│   ├── migrate_add_english_fields.py  # Database migration scripts
+│   ├── migrate_add_child_english_field.py
 │   └── requirements.txt
-├── frontend/        # React 前端
+├── frontend/        # React Frontend
 │   ├── src/
 │   │   ├── App.js
 │   │   ├── App.css
+│   │   ├── locales.js  # Internationalization
 │   │   ├── index.js
 │   │   └── index.css
 │   └── package.json
 └── README.md
 ```
 
-## 安装和运行
+## Installation and Setup
 
-### 后端设置
+### Prerequisites
 
-1. 进入后端目录：
+- Python 3.8+
+- Node.js 16+
+- OpenAI API Key ([Get one here](https://platform.openai.com/api-keys))
+
+### Backend Setup
+
+1. Navigate to the backend directory:
 ```bash
 cd backend
 ```
 
-2. 创建虚拟环境（推荐）：
+2. Create a virtual environment (recommended):
 ```bash
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 ```
 
-3. 安装依赖：
+3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-4. 配置环境变量：
+4. Configure environment variables:
+   - Create a `.env` file in the `backend/` directory
+   - Add your OpenAI API Key:
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   PORT=8000
+   DATABASE_URL=sqlite:///./child_development.db
+   ```
+   - You can use the helper script: `python create_env.py`
+
+5. Run database migrations (if needed):
 ```bash
-cp .env.example .env
-# 编辑 .env 文件，填入你的 OpenAI API Key
+python migrate_add_english_fields.py
+python migrate_add_child_english_field.py
 ```
 
-5. 运行后端：
+6. Start the backend server:
 ```bash
 python main.py
-# 或使用 uvicorn
+# Or using uvicorn directly:
 uvicorn main:app --reload --port 8000
 ```
 
-后端将在 `http://localhost:8000` 运行
+The backend will run at `http://localhost:8000`
 
-### 前端设置
+### Frontend Setup
 
-1. 进入前端目录：
+1. Navigate to the frontend directory:
 ```bash
 cd frontend
 ```
 
-2. 安装依赖：
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-3. 运行前端：
+3. Start the frontend development server:
 ```bash
 npm start
 ```
 
-前端将在 `http://localhost:3000` 运行
+The frontend will run at `http://localhost:3000`
 
-## API 端点
+## API Endpoints
 
-### 孩子管理
-- `POST /api/children` - 创建孩子档案
-- `GET /api/children` - 获取所有孩子列表
-- `GET /api/children/{child_id}` - 获取单个孩子信息
+### Child Management
+- `POST /api/children` - Create a child profile
+- `GET /api/children` - Get all children
+- `GET /api/children/{child_id}` - Get a specific child's information
+- `PUT /api/children/{child_id}` - Update child profile
 
-### 发育记录
-- `POST /api/records` - 创建发育记录（支持文件上传）
-- `GET /api/children/{child_id}/records` - 获取孩子的所有记录
+### Development Records
+- `POST /api/records` - Create a development record (supports file uploads)
+- `GET /api/children/{child_id}/records` - Get all records for a child
+- `PUT /api/records/{record_id}` - Update a development record
+- `DELETE /api/records/{record_id}` - Delete a development record
 
-### 里程碑预测
-- `GET /api/children/{child_id}/milestones` - 预测下一个发育里程碑
+### Milestone Prediction
+- `GET /api/children/{child_id}/milestones` - Predict next developmental milestones (up to 3 years)
 
-## 使用说明
+### Development Comparison
+- `GET /api/children/{child_id}/comparison` - Compare with normal development standards
 
-1. **创建孩子档案**
-   - 点击"新建档案"按钮
-   - 填写孩子的基本信息和特殊情况
-   - 提交创建
+## Usage Guide
 
-2. **添加发育记录**
-   - 选择要记录的孩子
-   - 点击"新建记录"
-   - 填写各项发育指标
-   - 可选择上传图片或视频
-   - 提交后系统会自动使用AI评估发育状态
+1. **Create Child Profile**
+   - Click the "New Profile" button
+   - Fill in the child's basic information and special conditions
+   - Submit to create
 
-3. **查看里程碑预测**
-   - 选择孩子后，系统会自动显示预测的发育里程碑
-   - 里程碑包括预计时间和达成建议
+2. **Add Development Records**
+   - Select the child to record
+   - Click "New Record"
+   - Fill in development indicators (height, weight, gross motor, language, etc.)
+   - Optionally upload images or videos
+   - After submission, the system will automatically assess development status using AI
 
-## 环境变量
+3. **View Assessment Results**
+   - After record submission, the system automatically displays AI assessment results
+   - Assessment status: Normal Development / Benign Development / Regression
+   - Detailed evidence and recommendations are provided
 
-在 `backend/.env` 文件中配置：
+4. **View Milestone Predictions**
+   - After selecting a child, the system automatically displays predicted developmental milestones
+   - Milestones include expected time, normal age range, description, prediction basis, and achievement suggestions
+   - Only milestones up to 3 years of age (36 months) are shown
+
+5. **Compare with Normal Development**
+   - View normal developmental standards for the child's age
+   - See detailed comparison analysis and gap identification
+   - Get targeted suggestions for improvement
+
+6. **Language Switching**
+   - Use the language toggle button in the header to switch between English and Chinese
+   - All UI text and AI-generated content will switch accordingly
+
+## Environment Variables
+
+Configure in `backend/.env` file:
 
 ```
 OPENAI_API_KEY=your_openai_api_key_here
+PORT=8000
 DATABASE_URL=sqlite:///./child_development.db
-CHROMA_DB_PATH=./chroma_db
 ```
 
-## 注意事项
+## Data Privacy and Security
 
-1. 需要有效的 OpenAI API Key 才能使用AI评估功能
-2. 上传的图片和视频会保存在 `backend/uploads/` 目录下
-3. 数据库文件会自动创建在项目根目录
-4. 首次运行会自动初始化数据库表结构
+- **Data Anonymization**: The system can anonymize sensitive data (names, birth dates) before sending to OpenAI
+- **Local Storage**: All data is stored locally in SQLite database
+- **No Data Training**: Configure OpenAI to not use your data for training (see `PREVENT_TRAINING.md`)
+- **Secure LLM Service**: Use `llm_service_secure.py` which implements data anonymization
 
-## 开发计划
+For more information, see:
+- `backend/PRIVACY_SECURITY.md` - Privacy and security considerations
+- `backend/ENABLE_SECURITY.md` - How to enable data anonymization
+- `backend/PREVENT_TRAINING.md` - How to prevent OpenAI from using data for training
 
-- [ ] 添加用户认证系统
-- [ ] 支持更多文件格式
-- [ ] 添加数据可视化图表
-- [ ] 导出报告功能
-- [ ] 多语言支持
-- [ ] 移动端适配
+## Important Notes
 
-## 许可证
+1. A valid OpenAI API Key is required to use AI assessment features
+2. Uploaded images and videos are saved in the `backend/uploads/` directory
+3. Database files are automatically created in the project root directory
+4. Database table structure is automatically initialized on first run
+5. The system supports automatic translation between English and Chinese
+6. Milestone predictions are limited to 3 years of age (36 months) and earlier
+
+## Troubleshooting
+
+### Backend won't start
+- Check if all dependencies are installed: `pip install -r requirements.txt`
+- Verify the OpenAI API Key in `.env` file is correct
+- Ensure port 8000 is not in use (the system will try alternative ports automatically)
+- Use `python kill_port.py` to free port 8000 if needed
+
+### Frontend can't connect to backend
+- Ensure the backend is running
+- Check `src/App.js` for correct `API_BASE_URL`
+- Check browser console for CORS errors
+
+### AI assessment fails
+- Verify OpenAI API Key is valid
+- Check network connection
+- View backend logs for detailed error messages
+
+## Development Roadmap
+
+- [x] Basic child profile management
+- [x] Development record tracking
+- [x] AI-powered assessment
+- [x] Milestone prediction
+- [x] Normal development comparison
+- [x] Bilingual support (English/Chinese)
+- [x] Data anonymization
+- [ ] User authentication system
+- [ ] Support for more file formats
+- [ ] Data visualization charts
+- [ ] Export report functionality
+- [ ] Mobile app adaptation
+- [ ] Multi-user support
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
 
 MIT License
+
+## Support
+
+For issues and questions, please open an issue on GitHub.
+
+## Acknowledgments
+
+- Built with React and FastAPI
+- Powered by OpenAI GPT-4
+- Uses SQLite for data storage
