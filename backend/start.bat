@@ -1,0 +1,3 @@
+@echo off
+echo Starting Child Development Monitoring API...
+python main.py
